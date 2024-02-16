@@ -1,0 +1,26 @@
+{
+  "name": "namaste_react",
+  "version": "1.0.0",
+  "description": "",
+  "main": "App.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thuteshubham/namaste-react.git"
+  },
+  "keywords": [
+    "node",
+    "react"
+  ],
+  "author": "Shubham",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thuteshubham/namaste-react/issues"
+  },
+  "homepage": "https://github.com/thuteshubham/namaste-react#readme",
+  "devDependencies": {
+    "parcel": "^2.11.0"
+  }
+}
