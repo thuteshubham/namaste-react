@@ -4,15 +4,13 @@ export const RestCardComponent= (props)=>{
    const {cloudinaryImageId, name, cuisines, costForTwo, sla, avgRating} = restData?.info;
    const { deliveryTime} = sla
     return (
-      <div className="rest-card" style={{
-        background: "#f0f0f0"
-      }}>
+      <div className="m-2 p-2 w-[200px] h-[450px] rounded-lg bg-gray-100 hover:bg-gray-300" >
         <img 
-        className="rest-logo"
+        className="rounded-lg"
         src={`${CDN_URL}${cloudinaryImageId}`}
         alt="res-card" />
-        <div>
-        <h3 style={{margin: 5}}>{name}</h3>
+        <div >
+        <h3 className="font-bold text-lg py-2" style={{margin: 5}}>{name}</h3>
         <h4 style={{margin: 5}}>{cuisines.join(", ")}</h4>
         <h4 style={{margin: 5}}>{costForTwo}</h4>
         <h4 style={{margin: 5}}>{deliveryTime} mins</h4>
@@ -22,3 +20,19 @@ export const RestCardComponent= (props)=>{
     )
   }
   
+
+  // higher order Componet 
+
+  // input RestCardComponent in RestCardComponentPrime
+
+  export const  WithPrimeLabel= (RestCardComponent) =>{
+    return (props) =>{
+      return (
+        <div>
+          <label className="absolute bg-black text-white m-2 rounded-lg p-1">Prime</label>
+          {console.log({...props})}
+          <RestCardComponent  {...props}/>
+        </div>
+      )
+    }
+  }

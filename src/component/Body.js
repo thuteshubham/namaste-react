@@ -1,45 +1,55 @@
-import { RestCardComponent } from "./RestCardComponent";
+import { RestCardComponent,WithPrimeLabel } from "./RestCardComponent";
 import { useEffect, useState } from "react";
 import { Shimmer } from "./Shimmer";
-
+import { Link } from "react-router-dom";
+import { useOnlineStatus } from "../utils/useOnlineStatus";
+import { RESTAURANT_LIST_URL } from "../utils/constants";
 export const Body= ()=>{
 
     console.log("Body rendered")
 
     const [restListItems, setListOfRestaurants]= useState([]) ;
     const [filteredRestList, setfilteredRestList]= useState([]) ;
-    const [searchText,setSearchText]= useState("")
+    const [searchText,setSearchText]= useState("");
+
+    const PrimeLableRestarantCard=WithPrimeLabel(RestCardComponent);
 
     useEffect(()=>{
-       fectData()
+       fectData();
+       
     },[]);
 
     const fectData=async()=>{
-        const data= await fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=28.6134806&lng=77.2189594&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
+        const data= await fetch(RESTAURANT_LIST_URL);
         const json=await data.json();
 
         setListOfRestaurants(json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
         setfilteredRestList(json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
     }
 
-    return restListItems.length === 0 ? (
-      <Shimmer />
-    ) : (
+    const onlineStatus= useOnlineStatus();
+    if(onlineStatus === false) return <h1> Looks like You are offline</h1>
+
+    if (restListItems.length === 0) return  (<Shimmer />) 
+
+    console.log("restListItems",restListItems)
+   
+
+    return (
       <div className="body">
-        <div className="filter">
+        <div className="flex m-2 p-2">
           <div className="search">
-            <input type="text"  value={searchText} onChange={(e)=> setSearchText(e.target.value)}/>
-            <button onClick={()=> {
+            <input type="text" className="border border-solid border-black mx-2" value={searchText} onChange={(e)=> setSearchText(e.target.value)}/>
+            <button  className="border bg-green-100 hover:bg-green-200 rounded-md p-1" onClick={()=> {
                 const updatedRestListItems=restListItems
                 .filter((restarant)=> restarant?.info?.name.toLowerCase().includes(searchText.toLowerCase()));
                  setfilteredRestList(updatedRestListItems);   
-            }
-           
-            }>Search</button>
+            }}>Search</button>
           </div>
-          <div className="filter-btn">
+          <div className="mx-4 px-4">
             <button
-              className="filter-btn"
+              className="mx-4 p-1 bg-gray-200 hover:bg-gray-300  text-wrap rounded-md"
+              
               onClick={() => {
                const updatedRestListItems = restListItems
                .filter((restaurant) => restaurant.info.avgRating > 4.5);
@@ -50,13 +60,14 @@ export const Body= ()=>{
             </button>
           </div>
         </div>
-        <div className="rest-container">
+        <div className="m-2 p-2 flex flex-wrap">
           {filteredRestList.map((restaurant, index) => (
-            <RestCardComponent
-              key={restaurant.info.id}
-              id={restaurant.info.id}
-              restData={restaurant}
-            />
+            <Link  key={restaurant.info.id} to={"/restaurants/"+restaurant.info.id}>
+              {/* if restarant is from cannaouth place give prime label on a card */}
+              {restaurant.info.locality === "Connaught Place" ? 
+              (< PrimeLableRestarantCard  id={restaurant.info.id} restData={restaurant}/>) 
+              : (<RestCardComponent id={restaurant.info.id} restData={restaurant}/>)}
+            </Link>
           ))}
         </div>
       </div>
